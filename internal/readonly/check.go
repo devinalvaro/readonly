@@ -24,21 +24,21 @@ func checkSelector(pass *analysis.Pass, expr ast.Expr) {
 		return
 	}
 
-	var selectorField = pass.TypesInfo.ObjectOf(selector.Sel)
-	if selectorField.Pkg() == pass.Pkg {
+	var fieldSelector = selector.Sel
+	if pass.TypesInfo.ObjectOf(fieldSelector).Pkg() == pass.Pkg {
 		return
 	}
 	// invariant: The field is selected outside of its package.
 
-	var selectorType = pass.TypesInfo.TypeOf(selector.X)
-	var selectorStruct *types.Struct
-	if selectorStruct, ok = selectorType.Underlying().(*types.Struct); !ok {
+	var selectedType = pass.TypesInfo.TypeOf(selector.X)
+	var selectedStruct *types.Struct
+	if selectedStruct, ok = selectedType.Underlying().(*types.Struct); !ok {
 		return
 	}
 
-	if field, ok := findStructField(selectorStruct, selectorField.Name()); ok {
+	if field, ok := findStructField(selectedStruct, fieldSelector.Name); ok {
 		if !field.isIgnored() {
-			pass.Reportf(selectorField.Pos(), "readonly: field is being modified")
+			pass.Reportf(fieldSelector.Pos(), "readonly: field is being modified")
 		}
 	}
 }
