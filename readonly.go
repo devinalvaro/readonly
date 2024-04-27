@@ -1,8 +1,6 @@
 package readonly
 
 import (
-	"flag"
-
 	"golang.org/x/tools/go/analysis"
 	"golang.org/x/tools/go/analysis/passes/inspect"
 	"golang.org/x/tools/go/ast/inspector"
@@ -12,12 +10,13 @@ import (
 
 func NewAnalyzer() *analysis.Analyzer {
 	return &analysis.Analyzer{
-		Name:     "readonly",
-		Doc:      "make exported fields read-only from outside the package",
-		URL:      "https://github.com/devinalvaro/readonly",
-		Flags:    flag.FlagSet{},
-		Run:      run,
-		Requires: []*analysis.Analyzer{inspect.Analyzer},
+		Name: "readonly",
+		Doc:  "make exported fields read-only from outside the package",
+		URL:  "https://github.com/devinalvaro/readonly",
+		Requires: []*analysis.Analyzer{
+			inspect.Analyzer,
+		},
+		Run: run,
 	}
 }
 

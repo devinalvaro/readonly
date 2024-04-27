@@ -10,6 +10,5 @@ import (
 
 func TestReadonly(t *testing.T) {
 	var analyzer = readonly.NewAnalyzer()
-
-	analysistest.Run(t, analysistest.TestData(), analyzer, "a")
+	analysistest.Run(t, analysistest.TestData(), analyzer, "noflags")
 }

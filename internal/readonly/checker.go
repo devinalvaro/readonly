@@ -64,9 +64,7 @@ func (s Checker) checkSelector(expr ast.Expr) {
 		return
 	}
 
-	if field, ok := findStructField(selectedStruct, fieldSelector.Name); ok {
-		if !field.isIgnored() {
-			s.pass.Reportf(fieldSelector.Pos(), "readonly: field is being modified")
-		}
+	if fieldIsEnforced(selectedStruct) {
+		s.pass.Reportf(fieldSelector.Pos(), "readonly: field is being modified")
 	}
 }

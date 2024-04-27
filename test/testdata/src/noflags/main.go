@@ -1,6 +1,6 @@
 package main
 
-import "a/lib"
+import "noflags/lib"
 
 func main() {
 	var strct = lib.Struct{}
@@ -11,9 +11,9 @@ func main() {
 	strct.A++    // want `readonly: field is being modified`
 	strct.A--    // want `readonly: field is being modified`
 
-	strct.B = 42
-	strct.B += 1
-	strct.B *= 1
-	strct.B++
-	strct.B--
+	strct.B = 42 // want `readonly: field is being modified`
+	strct.B += 1 // want `readonly: field is being modified`
+	strct.B *= 1 // want `readonly: field is being modified`
+	strct.B++    // want `readonly: field is being modified`
+	strct.B--    // want `readonly: field is being modified`
 }
