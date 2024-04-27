@@ -3,9 +3,9 @@ package main
 import (
 	"golang.org/x/tools/go/analysis/singlechecker"
 
-	"github.com/devinalvaro/readonly/internal/readonly"
+	"github.com/devinalvaro/readonly"
 )
 
 func main() {
-	singlechecker.Main(readonly.New())
+	singlechecker.Main(readonly.NewAnalyzer())
 }

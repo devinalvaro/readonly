@@ -2,14 +2,15 @@ package readonly
 
 import (
 	"flag"
-	"go/ast"
 
 	"golang.org/x/tools/go/analysis"
 	"golang.org/x/tools/go/analysis/passes/inspect"
 	"golang.org/x/tools/go/ast/inspector"
+
+	"github.com/devinalvaro/readonly/internal/readonly"
 )
 
-func New() *analysis.Analyzer {
+func NewAnalyzer() *analysis.Analyzer {
 	return &analysis.Analyzer{
 		Name:     "readonly",
 		Doc:      "make exported fields read-only from outside the package",
@@ -22,12 +23,9 @@ func New() *analysis.Analyzer {
 
 func run(pass *analysis.Pass) (any, error) {
 	var visitor = pass.ResultOf[inspect.Analyzer].(*inspector.Inspector)
-	var filter = []ast.Node{(*ast.AssignStmt)(nil), (*ast.IncDecStmt)(nil)}
+	var checker = readonly.NewChecker(pass)
 
-	visitor.Preorder(filter, func(node ast.Node) {
-		checkAssignStmt(pass, node)
-		checkIncDecStmt(pass, node)
-	})
+	visitor.Preorder(checker.Nodes(), checker.Check)
 
 	return nil, nil
 }

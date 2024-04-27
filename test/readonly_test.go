@@ -5,11 +5,11 @@ import (
 
 	"golang.org/x/tools/go/analysis/analysistest"
 
-	"github.com/monadicEffect/readonly/internal/readonly"
+	"github.com/devinalvaro/readonly"
 )
 
 func TestReadonly(t *testing.T) {
-	var analyzer = readonly.New()
+	var analyzer = readonly.NewAnalyzer()
 
 	analysistest.Run(t, analysistest.TestData(), analyzer, "a")
 }

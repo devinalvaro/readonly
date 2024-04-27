@@ -21,8 +21,8 @@ func findStructField(strct *types.Struct, fieldName string) (field, bool) {
 }
 
 const (
-	tagName        = "readonly"
-	tagValueIgnore = "ignore"
+	tagName         = "readonly"
+	tagValueIgnore  = "ignore"
 )
 
 type field struct {
