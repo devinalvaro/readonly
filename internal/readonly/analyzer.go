@@ -22,10 +22,11 @@ func New() *analysis.Analyzer {
 
 func run(pass *analysis.Pass) (any, error) {
 	var visitor = pass.ResultOf[inspect.Analyzer].(*inspector.Inspector)
-	var filter = []ast.Node{(*ast.AssignStmt)(nil)}
+	var filter = []ast.Node{(*ast.AssignStmt)(nil), (*ast.IncDecStmt)(nil)}
 
 	visitor.Preorder(filter, func(node ast.Node) {
 		checkAssignStmt(pass, node)
+		checkIncDecStmt(pass, node)
 	})
 
 	return nil, nil

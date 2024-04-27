@@ -18,6 +18,15 @@ func checkAssignStmt(pass *analysis.Pass, node ast.Node) {
 	}
 }
 
+func checkIncDecStmt(pass *analysis.Pass, node ast.Node) {
+	var incDecStmt, ok = node.(*ast.IncDecStmt)
+	if !ok {
+		return
+	}
+
+	checkSelector(pass, incDecStmt.X)
+}
+
 func checkSelector(pass *analysis.Pass, expr ast.Expr) {
 	var selector, ok = expr.(*ast.SelectorExpr)
 	if !ok {
