@@ -50,6 +50,7 @@ func (s Checker) checkLhs(expr ast.Expr) {
 	s.checkSelector(expr)
 	s.checkStar(expr)
 	s.checkIndex(expr)
+	s.checkParen(expr)
 }
 
 func (s Checker) checkSelector(expr ast.Expr) {
@@ -85,4 +86,13 @@ func (s Checker) checkIndex(expr ast.Expr) {
 	if indexExpr, ok := expr.(*ast.IndexExpr); ok {
 		s.checkLhs(indexExpr.X)
 	}
+}
+
+func (s Checker) checkParen(expr ast.Expr) {
+	var paren, ok = expr.(*ast.ParenExpr)
+	if !ok {
+		return
+	}
+
+	s.checkLhs(paren.X)
 }

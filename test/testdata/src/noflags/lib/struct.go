@@ -6,4 +6,6 @@ type Struct struct {
 	NestedPointer **bool
 	Slice         []string
 	Map           map[string]struct{}
+	SlicePointer  *[]string
+	MapPointer    *map[string]struct{}
 }

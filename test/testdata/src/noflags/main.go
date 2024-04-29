@@ -32,4 +32,10 @@ func main() {
 
 	strct.Map = make(map[string]struct{}) // want `readonly: field is being modified`
 	strct.Map["any"] = struct{}{}         // want `readonly: field is being modified`
+
+	strct.SlicePointer = &strct.Slice // want `readonly: field is being modified`
+	(*strct.SlicePointer)[0] = "any"  // want `readonly: field is being modified`
+
+	strct.MapPointer = &strct.Map           // want `readonly: field is being modified`
+	(*strct.MapPointer)["any"] = struct{}{} // want `readonly: field is being modified`
 }
