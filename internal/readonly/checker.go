@@ -47,6 +47,11 @@ func (s Checker) checkIncDecStmt(node ast.Node) {
 }
 
 func (s Checker) checkSelector(expr ast.Expr) {
+	if starExpr, ok := expr.(*ast.StarExpr); ok {
+		s.checkSelector(starExpr.X)
+		return
+	}
+
 	var selector, ok = expr.(*ast.SelectorExpr)
 	if !ok {
 		return

@@ -1,6 +1,7 @@
 package lib
 
 type Struct struct {
-	A int `readonly:"enforce_all"`
-	B int
+	Number        int `readonly:"enforce_all"`
+	Pointer       *bool
+	NestedPointer **bool
 }
