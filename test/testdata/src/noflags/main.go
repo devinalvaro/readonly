@@ -20,11 +20,16 @@ func main() {
 	strct.Number++     // want `readonly: field is being modified`
 	strct.Number--     // want `readonly: field is being modified`
 
-	var newValue = true
-	strct.Pointer = &newValue // want `readonly: field is being modified`
-	*strct.Pointer = newValue // want `readonly: field is being modified`
+	strct.Pointer = nil   // want `readonly: field is being modified`
+	*strct.Pointer = true // want `readonly: field is being modified`
 
 	strct.NestedPointer = &strct.Pointer   // want `readonly: field is being modified`
 	*strct.NestedPointer = strct.Pointer   // want `readonly: field is being modified`
 	**strct.NestedPointer = *strct.Pointer // want `readonly: field is being modified`
+
+	strct.Slice = make([]string, 0) // want `readonly: field is being modified`
+	strct.Slice[0] = "any"          // want `readonly: field is being modified`
+
+	strct.Map = make(map[string]struct{}) // want `readonly: field is being modified`
+	strct.Map["any"] = struct{}{}         // want `readonly: field is being modified`
 }

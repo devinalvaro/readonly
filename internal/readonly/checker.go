@@ -33,7 +33,7 @@ func (s Checker) checkAssignStmt(node ast.Node) {
 	}
 
 	for _, expr := range assignStmt.Lhs {
-		s.checkSelector(expr)
+		s.checkLhs(expr)
 	}
 }
 
@@ -43,15 +43,16 @@ func (s Checker) checkIncDecStmt(node ast.Node) {
 		return
 	}
 
-	s.checkSelector(incDecStmt.X)
+	s.checkLhs(incDecStmt.X)
+}
+
+func (s Checker) checkLhs(expr ast.Expr) {
+	s.checkSelector(expr)
+	s.checkStar(expr)
+	s.checkIndex(expr)
 }
 
 func (s Checker) checkSelector(expr ast.Expr) {
-	if starExpr, ok := expr.(*ast.StarExpr); ok {
-		s.checkSelector(starExpr.X)
-		return
-	}
-
 	var selector, ok = expr.(*ast.SelectorExpr)
 	if !ok {
 		return
@@ -71,5 +72,17 @@ func (s Checker) checkSelector(expr ast.Expr) {
 
 	if fieldIsEnforced(selectedStruct) {
 		s.pass.Reportf(fieldSelector.Pos(), "readonly: field is being modified")
+	}
+}
+
+func (s Checker) checkStar(expr ast.Expr) {
+	if starExpr, ok := expr.(*ast.StarExpr); ok {
+		s.checkLhs(starExpr.X)
+	}
+}
+
+func (s Checker) checkIndex(expr ast.Expr) {
+	if indexExpr, ok := expr.(*ast.IndexExpr); ok {
+		s.checkLhs(indexExpr.X)
 	}
 }
