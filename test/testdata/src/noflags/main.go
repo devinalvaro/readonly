@@ -3,7 +3,7 @@ package main
 import "noflags/lib"
 
 func main() {
-	var strct = lib.Struct{}
+	var strct = &lib.Struct{}
 
 	strct.Number = 42  // want `readonly: field is being modified`
 	strct.Number += 1  // want `readonly: field is being modified`

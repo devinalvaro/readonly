@@ -61,7 +61,7 @@ func (s Checker) checkSelectorLhs(selector *ast.SelectorExpr) {
 	// invariant: The field is selected outside of its package.
 
 	var selectedType = s.pass.TypesInfo.TypeOf(selector.X)
-	var selectedStruct, ok = selectedType.Underlying().(*types.Struct)
+	var selectedStruct, ok = assertStructType(selectedType)
 	if !ok {
 		return
 	}
@@ -81,4 +81,13 @@ func (s Checker) checkIndexLhs(index *ast.IndexExpr) {
 
 func (s Checker) checkParenLhs(paren *ast.ParenExpr) {
 	s.checkLhs(paren.X)
+}
+
+func assertStructType(typ types.Type) (*types.Struct, bool) {
+	if pointer, ok := typ.Underlying().(*types.Pointer); ok {
+		return assertStructType(pointer.Elem())
+	}
+
+	var strct, ok = typ.Underlying().(*types.Struct)
+	return strct, ok
 }
