@@ -13,4 +13,10 @@ type Struct struct {
 	Map        map[string]struct{}
 	MapPointer *map[string]struct{}
 	NestedMap  map[string]map[string]struct{}
+
+	Self *Struct
+}
+
+type Outer struct {
+	Struct Struct
 }

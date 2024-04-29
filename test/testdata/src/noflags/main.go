@@ -3,7 +3,7 @@ package main
 import "noflags/lib"
 
 func main() {
-	var strct = &lib.Struct{}
+	var strct = lib.Struct{}
 
 	strct.Number = 42  // want `readonly: field is being modified`
 	strct.Number += 1  // want `readonly: field is being modified`
@@ -46,4 +46,10 @@ func main() {
 	strct.NestedMap = make(map[string]map[string]struct{}) // want `readonly: field is being modified`
 	strct.NestedMap["any"] = make(map[string]struct{})     // want `readonly: field is being modified`
 	strct.NestedMap["any"]["thing"] = struct{}{}           // want `readonly: field is being modified`
+
+	strct.Self.Number = 42 // want `readonly: field is being modified`
+
+	var outer = lib.Outer{}
+
+	outer.Struct.Number = 42 // want `readonly: field is being modified`
 }
