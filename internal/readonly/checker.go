@@ -22,43 +22,38 @@ func (s Checker) Nodes() []ast.Node {
 }
 
 func (s Checker) Check(node ast.Node) {
-	s.checkAssignStmt(node)
-	s.checkIncDecStmt(node)
+	switch node := node.(type) {
+	case *ast.AssignStmt:
+		s.checkAssignStmt(node)
+	case *ast.IncDecStmt:
+		s.checkIncDecStmt(node)
+	}
 }
 
-func (s Checker) checkAssignStmt(node ast.Node) {
-	var assignStmt, ok = node.(*ast.AssignStmt)
-	if !ok {
-		return
-	}
-
-	for _, expr := range assignStmt.Lhs {
+func (s Checker) checkAssignStmt(assign *ast.AssignStmt) {
+	for _, expr := range assign.Lhs {
 		s.checkLhs(expr)
 	}
 }
 
-func (s Checker) checkIncDecStmt(node ast.Node) {
-	var incDecStmt, ok = node.(*ast.IncDecStmt)
-	if !ok {
-		return
-	}
-
-	s.checkLhs(incDecStmt.X)
+func (s Checker) checkIncDecStmt(incDec *ast.IncDecStmt) {
+	s.checkLhs(incDec.X)
 }
 
-func (s Checker) checkLhs(expr ast.Expr) {
-	s.checkSelector(expr)
-	s.checkStar(expr)
-	s.checkIndex(expr)
-	s.checkParen(expr)
+func (s Checker) checkLhs(lhs ast.Expr) {
+	switch expr := lhs.(type) {
+	case *ast.SelectorExpr:
+		s.checkSelectorLhs(expr)
+	case *ast.StarExpr:
+		s.checkStarLhs(expr)
+	case *ast.IndexExpr:
+		s.checkIndexLhs(expr)
+	case *ast.ParenExpr:
+		s.checkParenLhs(expr)
+	}
 }
 
-func (s Checker) checkSelector(expr ast.Expr) {
-	var selector, ok = expr.(*ast.SelectorExpr)
-	if !ok {
-		return
-	}
-
+func (s Checker) checkSelectorLhs(selector *ast.SelectorExpr) {
 	var fieldSelector = selector.Sel
 	if s.pass.TypesInfo.ObjectOf(fieldSelector).Pkg() == s.pass.Pkg {
 		return
@@ -66,8 +61,8 @@ func (s Checker) checkSelector(expr ast.Expr) {
 	// invariant: The field is selected outside of its package.
 
 	var selectedType = s.pass.TypesInfo.TypeOf(selector.X)
-	var selectedStruct *types.Struct
-	if selectedStruct, ok = selectedType.Underlying().(*types.Struct); !ok {
+	var selectedStruct, ok = selectedType.Underlying().(*types.Struct)
+	if !ok {
 		return
 	}
 
@@ -76,23 +71,14 @@ func (s Checker) checkSelector(expr ast.Expr) {
 	}
 }
 
-func (s Checker) checkStar(expr ast.Expr) {
-	if starExpr, ok := expr.(*ast.StarExpr); ok {
-		s.checkLhs(starExpr.X)
-	}
+func (s Checker) checkStarLhs(star *ast.StarExpr) {
+	s.checkLhs(star.X)
 }
 
-func (s Checker) checkIndex(expr ast.Expr) {
-	if indexExpr, ok := expr.(*ast.IndexExpr); ok {
-		s.checkLhs(indexExpr.X)
-	}
+func (s Checker) checkIndexLhs(index *ast.IndexExpr) {
+	s.checkLhs(index.X)
 }
 
-func (s Checker) checkParen(expr ast.Expr) {
-	var paren, ok = expr.(*ast.ParenExpr)
-	if !ok {
-		return
-	}
-
+func (s Checker) checkParenLhs(paren *ast.ParenExpr) {
 	s.checkLhs(paren.X)
 }
