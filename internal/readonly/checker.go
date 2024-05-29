@@ -66,7 +66,7 @@ func (s Checker) checkSelectorLhs(selector *ast.SelectorExpr) {
 		return
 	}
 
-	if fieldIsEnforced(selectedStruct) {
+	if fieldIsEnforced(selectedStruct, fieldSelector.Name) {
 		s.pass.Reportf(fieldSelector.Pos(), "readonly: field is being modified")
 	}
 }

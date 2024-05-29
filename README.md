@@ -20,11 +20,25 @@ Consider the following struct:
 package example
 
 type Config struct {
-	Name string
+	Name  string `readonly:"enforce"`
+	Value string
 }
 ```
 
 `readonly` will report an error if `Config.Name` is modified from outside the `example` package.
+
+Another example:
+
+```go
+package example
+
+type Config struct {
+	Name  string `readonly:"enforce_all"`
+	Value string
+}
+```
+
+`readonly` now enforces both `Config.Name` and `Config.Value`.
 
 ## Testing
 
